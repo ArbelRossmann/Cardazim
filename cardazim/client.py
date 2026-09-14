@@ -1,22 +1,20 @@
 import argparse
 import sys
-import struct
-import socket
+
+import connection
 
 ###########################################################
 ####################### YOUR CODE #########################
 ###########################################################
 
 
-def send_data(server_ip, server_port, data: str):
+def send_data(server_ip: str, server_port: int, data: str):
     """
     Send data to server in address (server_ip, server_port).
     """
-    packet = struct.pack(f"<i{len(data)}s", len(data), data.encode())
-    print("Sending message...")
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((server_ip, server_port))
-        s.sendall(packet)
+    with connection.Connection.connect(server_ip, server_port) as conn:
+        print("Sending message...")
+        conn.send_message(data.encode())
 
 
 ###########################################################
