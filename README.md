@@ -1,4 +1,4 @@
 # Template-Repository
 
-This is a template for the Cardazim Project!
-Feel free to look around for interesting stuff!
+This is a my Cardazim Project!
+Don't look if you shouldn't
