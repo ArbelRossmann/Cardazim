@@ -1,20 +1,24 @@
 import argparse
 import sys
+from time import sleep
 
-import connection
+from connection import Connection
 
 ###########################################################
 ####################### YOUR CODE #########################
 ###########################################################
 
 
-def send_data(server_ip: str, server_port: int, data: str):
+def send_data(server_ip: str, server_port: int, data: str) -> None:
     """
     Send data to server in address (server_ip, server_port).
     """
-    with connection.Connection.connect(server_ip, server_port) as conn:
+    with Connection.connect(server_ip, server_port) as conn:
         print("Sending message...")
         conn.send_message(data.encode())
+        sleep(5)
+        conn.send_message(data.encode())
+        print("done")
 
 
 ###########################################################

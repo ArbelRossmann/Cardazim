@@ -5,13 +5,13 @@ import struct
 
 
 class Connection:
-    def __init__(self, connection: socket.socket):
+    def __init__(self, connection: socket.socket) -> None:
         """
         Initializes connection object.
         """
         self.sock = connection
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """ "
         Returns human-readable format of connection.
         """
@@ -19,7 +19,7 @@ class Connection:
         local_ip, local_port = self.sock.getsockname()
         return f"<Connection from {local_ip}:{local_port} to {remote_ip}:{remote_port}>"
 
-    def send_message(self, message: bytes):
+    def send_message(self, message: bytes) -> None:
         """
         Sends message with correct formatting.
         """
@@ -34,6 +34,11 @@ class Connection:
         if not data:
             return None
         length = int.from_bytes(data[:4], byteorder="little")
+        while len(data) < length:
+            new_data = self.sock.recv(1024)
+            data += new_data
+            if not new_data:
+                raise ConnectionAbortedError()
         message = data[4 : 4 + length].decode()
         return message
 
@@ -46,19 +51,19 @@ class Connection:
         s.connect((host, port))
         return Connection(s)
 
-    def close(self):
+    def close(self) -> None:
         """
         Closes the connection.
         """
         self.sock.close()
 
-    def __enter__(self):
+    def __enter__(self) -> Connection:
         """
         Context manager enter.
         """
         return self
 
-    def __exit__(self, exc_type, exc, tb):
+    def __exit__(self, exc_type, exc, tb) -> None:
         """
         Context manager exit.
         """

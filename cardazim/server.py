@@ -2,15 +2,15 @@ import argparse
 import sys
 import threading
 
-import connection
 import listener
+from connection import Connection
 
 ###########################################################
 ####################### YOUR CODE #########################
 ###########################################################
 
 
-def handle_connection(conn: connection.Connection):
+def handle_connection(conn: Connection) -> None:
     """
     Handles the connection.
 
@@ -20,12 +20,12 @@ def handle_connection(conn: connection.Connection):
     with conn:
         while True:
             message = conn.receive_message()
-            if not message:
+            if message is None:
                 break
             print(f"Received data: {message}")
 
 
-def run_server(ip, port):
+def run_server(ip, port) -> None:
     """
     Receive data sent to ip:port and print to screen.
 
@@ -35,8 +35,9 @@ def run_server(ip, port):
     :type port: number
     """
     with listener.Listener(ip, port) as l:
-        t = threading.Thread(target=handle_connection, args=(l.accept(),))
-        t.start()
+        while True:
+            t = threading.Thread(target=handle_connection, args=(l.accept(),))
+            t.start()
 
 
 ###########################################################
