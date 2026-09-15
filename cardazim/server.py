@@ -2,29 +2,46 @@ import argparse
 import sys
 import struct
 import socket
+import threading
 
 ###########################################################
 ####################### YOUR CODE #########################
 ###########################################################
 
 
+def handle_connection(conn: socket):
+    """
+    Handles the connection.
+
+    :param socc: socket representing the connection
+    :type socc: socket
+    """
+    with conn:
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
+            length = int.from_bytes(data[:4], byteorder="little")
+            message = data[4 : 4 + length].decode()
+            print(f"Received data: {message}")
+
+
 def run_server(ip, port):
     """
-    Receive data sent to ip:port and print to screen
+    Receive data sent to ip:port and print to screen.
+
+    :param ip: ip to host server on
+    :type ip: ip number
+    :param port: port to host on
+    :type port: number
     """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((ip, port))
         s.listen(1)
         while True:
             conn, _ = s.accept()
-            with conn:
-                while True:
-                    data = conn.recv(1024)
-                    if not data:
-                        break
-                    length = int.from_bytes(data[:4], byteorder="little")
-                    message = data[4 : 4 + length].decode()
-                    print(f"Received data: {message}")
+            t = threading.Thread(target=handle_connection, args=(conn,))
+            t.start()
 
 
 ###########################################################
