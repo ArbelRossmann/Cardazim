@@ -1,6 +1,5 @@
 import argparse
 import sys
-from time import sleep
 
 from connection import Connection
 
@@ -16,9 +15,6 @@ def send_data(server_ip: str, server_port: int, data: str) -> None:
     with Connection.connect(server_ip, server_port) as conn:
         print("Sending message...")
         conn.send_message(data.encode())
-        sleep(5)
-        conn.send_message(data.encode())
-        print("done")
 
 
 ###########################################################
